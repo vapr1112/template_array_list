@@ -1,30 +1,20 @@
 #pragma once
 
-template <class T> Array<T>::Array(const list<T> array_p)noexcept : mas{ array_p }{}
+template <class T> Array<T>:: Array(const list<T>& array_p, const int grow_p)noexcept : mas{ array_p }{}
 
 template <class T> Array<T>::Array(const Array& array_p)noexcept : mas{array_p.mas}{}
 
 template <class T> Array<T>::Array(Array&& array_p)noexcept
 {
-	if (this != array_p)
-	{
-		mas = array_p.mas;
+	mas = array_p.mas;
 
-		array_p.mas = T();
-	}
+	array_p.mas.clear();
 }
 
-template <class T> void Array<T>::set_size(const size_t size, const size_t grow)noexcept
+template <class T> void Array<T>::set_size(const size_t size, const size_t grow_p)noexcept
 {
-	while (size >= mas.size())
-	{
-		mas.resize(mas.size() + grow);
-	}
-
-	while (size < mas.size())
-	{
-		mas.resize(mas.size() - grow);
-	}
+	mas.resize(mas.size());
+	grow = grow_p;
 }
 
 template <class T> int Array<T>::get_upper_bound()const noexcept
@@ -62,7 +52,7 @@ template <class T> void Array<T>::add(const T element)
 {
 	if (mas.size() - 1 == get_upper_bound())
 	{
-		set_size(mas.size());
+		mas.resize(mas.size() + grow);
 	}
 
 	mas.push_back(element);
@@ -90,7 +80,7 @@ template <class T> void Array<T>::insert_at(const int idx, list<T> mas_2)
 {
 	if (idx < 0 || idx > mas.size())
 	{
-		throw "\nневернй индекс\n";
+		throw out_of_range("\nневернй индекс\n");
 	}
 	auto pos = mas.begin();
 	advance(pos, idx);
@@ -101,7 +91,7 @@ template <class T> void Array<T>:: remove_at(const int idx, const int idx_2)
 {
 	if (idx < 0 || idx > mas.size())
 	{
-		throw "\nневернй индекс\n";
+		throw out_of_range("\nневернй индекс\n");
 	}
 	auto pos = mas.begin();
 	auto pos_2 = mas.begin();
@@ -133,14 +123,7 @@ template<typename T> const Array<T>& Array<T>:: operator=(const Array<T>& array_
 {
 	if (&array_p != this)
 	{
-		delete[] mas;
-
-		mas = new T * [size];
-
-		for (int i = 0; i < size; i++)
-		{
-			mas[i] = array_p.mas[i];
-		}
+		mas = array_p.mas;
 	}
 	return *this;
 }
@@ -149,19 +132,10 @@ template<typename T> Array<T>&& Array<T>:: operator=(Array<T>&& array_p)
 {
 	if (this != array_p)
 	{
-		delete[] mas;
 
 		size = array_p.size;
-
-		mas = new T[size];
-
 		mas = array_p.mas;
-
-		mas = array_p.mas;
-
-		array_p.mas = nullptr;
-
-		array_p.size = 0;
+		array_p.mas.clear();
 	}
 	return *this;
 }
@@ -170,7 +144,7 @@ template<typename T> T Array<T>:: operator[](const int idx)
 {
 	if (idx < 0 || idx > mas.size())
 	{
-		throw "\nневернй индекс\n";
+		throw out_of_range("\nневернй индекс\n");
 	}
 	auto iter = mas.begin();
 	advance(iter, idx);
@@ -181,7 +155,7 @@ template<typename T> T Array<T>:: operator[](const int idx)const
 {
 	if (idx < 0 || idx > mas.size())
 	{
-		throw "\nневернй индекс\n";
+		throw out_of_range("\nневернй индекс\n");
 	}
 	auto iter = mas.begin();
 	advance(iter, idx);

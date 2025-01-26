@@ -9,10 +9,11 @@ template <class T> class Array
 {
 private:
 	list<T> mas;
+	int grow;
 public:
-	Array()noexcept : Array(list<T>()) {}
+	Array()noexcept : Array(list<T>(), 1) {}
 	//главный конструктор
-	Array(const list<T> array_p) noexcept;
+	explicit Array(const list<T>& array_p, const int grow_p) noexcept;
 	//конструктор копирования
 	Array(const Array& array_p)noexcept;
 	//конструктор переноса
@@ -27,7 +28,7 @@ public:
 	//добавление элемента в конец массива
 	void add(const T element);
 	//изменяет размер на grow
-	void set_size(const size_t size, const size_t grow = 5)noexcept;
+	void set_size(const size_t size, const size_t grow_p = 5)noexcept;
 	//возвращает последний допустимый индекс в массиве (последнее заполненое значение) 
 	int get_upper_bound()const noexcept;
 	//очищает память выше последнегодопустимого индекса
